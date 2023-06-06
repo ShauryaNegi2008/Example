@@ -1,0 +1,93 @@
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+
+import com.google.api.client.json.JsonFactory;
+
+import com.google.api.client.json.jackson2.JacksonFactory;
+
+import com.google.api.services.youtube.YouTube;
+
+import com.google.api.services.youtube.model.Video;
+
+import javafx.application.Application;
+
+import javafx.scene.Scene;
+
+import javafx.scene.media.Media;
+
+import javafx.scene.media.MediaPlayer;
+
+import javafx.scene.media.MediaView;
+
+import javafx.stage.Stage;
+
+public class YouTubePlayerApp extends Application {
+
+    private static final String VIDEO_ID = "YOUR_VIDEO_ID";
+
+    private static final String API_KEY = "YOUR_YOUTUBE_API_KEY";
+
+    public static void main(String[] args) {
+
+        launch(args);
+
+    }
+
+    @Override
+
+    public void start(Stage primaryStage) throws Exception {
+
+        primaryStage.setTitle("YouTube Player");
+
+        // Initialize YouTube service
+
+        YouTube youtube = new YouTube.Builder(
+
+                GoogleNetHttpTransport.newTrustedTransport(),
+
+                JacksonFactory.getDefaultInstance(),
+
+                null)
+
+                .setApplicationName("youtube-player")
+
+                .build();
+
+        // Fetch video details
+
+        YouTube.Videos.List videoRequest = youtube.videos().list("snippet");
+
+        videoRequest.setKey(API_KEY);
+
+        videoRequest.setId(VIDEO_ID);
+
+        Video video = videoRequest.execute().getItems().get(0);
+
+        // Get video URL
+
+        String videoUrl = "https://www.youtube.com/watch?v=" + VIDEO_ID;
+
+        // Create media player
+
+        Media media = new Media(videoUrl);
+
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+
+        MediaView mediaView = new MediaView(mediaPlayer);
+
+        // Play the video
+
+        mediaPlayer.play();
+
+        // Create the scene
+
+        Scene scene = new Scene(mediaView, 800, 600);
+
+        primaryStage.setScene(scene);
+
+        primaryStage.show();
+
+    }
+
+}
+
+ 
